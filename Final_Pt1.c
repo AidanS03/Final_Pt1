@@ -28,8 +28,16 @@ void main() {
           //obj 3 all of portD needs to be an ouput.
      GPIOE_CRH = 0x33333333; //Set PortE/H as an output for LEDS
 //******************************************************************************
-     joyRead();
-     
+     for(;;){
+          switch(joyRead()){
+               case 0 : //no press
+               case 1 : //up turn on PE11 and PE15
+               case 2 : //right turn on PE9 and PE10
+               case 3 : //down turn on PE8 and PE12
+               case 4 : //left turn on PE13 and 14
+               case 5 : //click turn on all
+          }
+     }
 }
 //Function Definitions:
 int joyRead(){
@@ -42,6 +50,6 @@ int joyRead(){
      }else if(GPIOD_IDR.B2 == 1){
      //joystick left return 4
      }else if(GPIOC_IDR.B13 == 1){
-     //joystick pressed return 5
+     //joystick clicked return 5
      }else //nothing pressed return 0
 }
