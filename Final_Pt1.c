@@ -8,7 +8,7 @@
 //Global Variables:
 
 //******************************************************************************
-//My Functions:
+//Function Prototypes:
 int joyRead();
 //******************************************************************************
 //Main Function:
@@ -30,4 +30,18 @@ void main() {
 //******************************************************************************
      joyRead();
      
+}
+//Function Definitions:
+int joyRead(){
+     if(GPIOD_IDR.B4 == 1){
+     //joystick up return a 1
+     }else if(GPIOA_IDR.B4 == 1){
+     //joystick right return 2
+     }else if(GPIOB_IDR.B5 == 1){
+     //joystick down return 3
+     }else if(GPIOD_IDR.B2 == 1){
+     //joystick left return 4
+     }else if(GPIOC_IDR.B13 == 1){
+     //joystick pressed return 5
+     }else //nothing pressed return 0
 }
