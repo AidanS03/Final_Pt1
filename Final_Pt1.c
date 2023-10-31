@@ -31,25 +31,35 @@ void main() {
      for(;;){
           switch(joyRead()){
                case 0 : //no press
+                    GPIOE_ODR = 0;
                case 1 : //up turn on PE11 and PE15
+                    GPIOE_ODR.B11 = 1;
+                    GPIOE_ODR.B15 = 1;
                case 2 : //right turn on PE9 and PE10
+                    GPIOE_ODR.B9 = 1;
+                    GPIOE_ODR.B10 = 1;
                case 3 : //down turn on PE8 and PE12
+                    GPIOE_ODR.B8 = 1;
+                    GPIOE_ODR.B12 = 1;
                case 4 : //left turn on PE13 and 14
+                    GPIOE_ODR.B13 = 1;
+                    GPIOE_ODR.B14 = 1;
                case 5 : //click turn on all
+                    GPIOE_ODR =
           }
      }
 }
 //Function Definitions:
 int joyRead(){
      if(GPIOD_IDR.B4 == 1){
-     //joystick up return a 1
+          return 1; //joystick up return a 1
      }else if(GPIOA_IDR.B4 == 1){
-     //joystick right return 2
+          return 2; //joystick right return 2
      }else if(GPIOB_IDR.B5 == 1){
-     //joystick down return 3
+          return 3; //joystick down return 3
      }else if(GPIOD_IDR.B2 == 1){
-     //joystick left return 4
+          return 4; //joystick left return 4
      }else if(GPIOC_IDR.B13 == 1){
-     //joystick clicked return 5
-     }else //nothing pressed return 0
+          return 5; //joystick clicked return 5
+     }else return 0; //nothing pressed return 0
 }
