@@ -6,7 +6,7 @@
 //             read an analog potentiometer value.
 //******************************************************************************
 //Global Variables:
-
+int joy = 0;
 //******************************************************************************
 //Function Prototypes:
 int joyRead();
@@ -21,45 +21,57 @@ void main() {
      RCC_APB2ENR |= 1 << 6;  //enables clock for PortE
      
      GPIOA_CRL = 0x44444444; //Sets PortA/L as an input
+     GPIOA_CRH = 0x44444444;
      GPIOB_CRL = 0x44444444; //sets PortB/L as an input
+     GPIOB_CRH = 0x44444444;
      GPIOC_CRH = 0x44444444; //sets PortC/H as an input
+     GPIOC_CRH = 0x44444444;
      GPIOD_CRL = 0x44444444; //Sets PortD/L as an input *as an FYI we
           //may have to change this later to be wihtin the function as for
           //obj 3 all of portD needs to be an ouput.
-     GPIOE_CRH = 0x33333333; //Set PortE/H as an output for LEDS
+     GPIOD_CRH = 0x44444444;
+     GPIOE_CRL = 0x33333333; //Set PortE/H as an output for LEDS
+     GPIOE_CRH = 0x33333333;
 //******************************************************************************
      for(;;){
-          switch(joyRead()){
+          joy = joyRead();
+          switch(joy){
                case 0 : //no press
                     GPIOE_ODR = 0;
+                    break;
                case 1 : //up turn on PE11 and PE15
                     GPIOE_ODR.B11 = 1;
                     GPIOE_ODR.B15 = 1;
+                    break;
                case 2 : //right turn on PE9 and PE10
                     GPIOE_ODR.B9 = 1;
                     GPIOE_ODR.B10 = 1;
+                    break;
                case 3 : //down turn on PE8 and PE12
                     GPIOE_ODR.B8 = 1;
                     GPIOE_ODR.B12 = 1;
+                    break;
                case 4 : //left turn on PE13 and 14
                     GPIOE_ODR.B13 = 1;
                     GPIOE_ODR.B14 = 1;
+                    break;
                case 5 : //click turn on all
-                    GPIOE_ODR =
+                    GPIOE_ODR = 0xFF00;
+                    break;
           }
      }
 }
 //Function Definitions:
 int joyRead(){
-     if(GPIOD_IDR.B4 == 1){
+     if(GPIOD_IDR.B4 == 0){
           return 1; //joystick up return a 1
-     }else if(GPIOA_IDR.B4 == 1){
+     }else if(GPIOA_IDR.B6 == 0){
           return 2; //joystick right return 2
-     }else if(GPIOB_IDR.B5 == 1){
+     }else if(GPIOB_IDR.B5 == 0){
           return 3; //joystick down return 3
-     }else if(GPIOD_IDR.B2 == 1){
+     }else if(GPIOD_IDR.B2 == 0){
           return 4; //joystick left return 4
-     }else if(GPIOC_IDR.B13 == 1){
+     }else if(GPIOC_IDR.B13 == 0){
           return 5; //joystick clicked return 5
      }else return 0; //nothing pressed return 0
 }
