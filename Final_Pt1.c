@@ -38,6 +38,28 @@ void main() {
                case 5 : //click turn on all
           }
      }
+   for(;;) {
+   //Objective 2
+   if(GPIOD_IDR.B4 == 1){     //UP PE11, PE15
+   GPIOE_ODR.B11 =  1;
+   GPIOE_ODR.B15 =  1;
+   }
+   if(GPIOD_IDR.B2 == 1){     //LEFT PE13, PE14
+   GPIOE_ODR.B13 = 1;
+   GPIOE_ODR.B14 = 1;
+   }
+   if(GPIOA_IDR.B6 == 1){     //RIGHT PE9, PE10
+   GPIOE_ODR.B9 = 1;
+   GPIOE_ODR.B10 = 1;
+   }
+   if(GPIOB_IDR.B5 == 1){     //DOWN PE8, PE12
+   GPIOE_ODR.B8 = 1;
+   GPIOE_ODR.B12 = 1;
+   }
+   if(GPIOC_IDR.B13 == 1){    //CLICK all LED's on Port E
+   GPIOE_ODR = 0xFFFF;
+   }
+} //end bracket for loop
 }
 //Function Definitions:
 int joyRead(){
