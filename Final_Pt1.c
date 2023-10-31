@@ -7,9 +7,13 @@
 //******************************************************************************
 //Global Variables:
 int joy = 0;
+int pot;
+int adjustedADC; //value of scaled pot between 1-100
+int ADCval;
 //******************************************************************************
 //Function Prototypes:
 int joyRead();
+int potRead();
 //******************************************************************************
 //Main Function:
 void main() {
@@ -19,19 +23,6 @@ void main() {
      RCC_APB2ENR |= 1 << 4;  //enables clock for PortC
      RCC_APB2ENR |= 1 << 5;  //enables clock for PortD
      RCC_APB2ENR |= 1 << 6;  //enables clock for PortE
-     
-     GPIOA_CRL = 0x44444444; //Sets PortA/L as an input
-     GPIOA_CRH = 0x44444444;
-     GPIOB_CRL = 0x44444444; //sets PortB/L as an input
-     GPIOB_CRH = 0x44444444;
-     GPIOC_CRH = 0x44444444; //sets PortC/H as an input
-     GPIOC_CRH = 0x44444444;
-     GPIOD_CRL = 0x44444444; //Sets PortD/L as an input *as an FYI we
-          //may have to change this later to be wihtin the function as for
-          //obj 3 all of portD needs to be an ouput.
-     GPIOD_CRH = 0x44444444;
-     GPIOE_CRL = 0x33333333; //Set PortE/H as an output for LEDS
-     GPIOE_CRH = 0x33333333;
 //******************************************************************************
      for(;;){
           joy = joyRead();
@@ -59,10 +50,19 @@ void main() {
                     GPIOE_ODR = 0xFF00;
                     break;
           }
+          pot = potRead();
+          GPIOD_ODR = pot;
      }
 }
 //Function Definitions:
 int joyRead(){
+     GPIOA_CRL |= 1 << 26; //Sets PA6 as an input
+     GPIOB_CRL |= 1 << 22; //sets PB5 as an input
+     GPIOC_CRH |= 1 << 22; //sets PC13 as an input
+     GPIOE_CRH = 0x33333333; //Set PortE/H as an output for LEDS
+     GPIOD_CRL = 0x40400; //Sets PD2 and PD4 as an input
+
+     
      if(GPIOD_IDR.B4 == 0){
           return 1; //joystick up return a 1
      }else if(GPIOA_IDR.B6 == 0){
@@ -74,4 +74,29 @@ int joyRead(){
      }else if(GPIOC_IDR.B13 == 0){
           return 5; //joystick clicked return 5
      }else return 0; //nothing pressed return 0
+}
+
+int potRead(){
+//double m = 99/3830;
+//double b = 3731/3830;
+//Configure the ADC
+     GPIOD_CRL = 0x33333333; //sets GPIOD as an output
+     GPIOD_CRH = 0x33333333;
+     GPIOC_CRL = 0;
+     RCC_APB2ENR |= 1 << 9 ; // Enable ADC1 Clock
+     ADC1_SQR1 = (0b0000 << 20); // sets ADC to do 1 conversion
+     ADC1_SQR3 = 10; // Select Channel 10 as only one in conversion sequence
+     ADC1_SMPR1 = 0b100; // Set sample time on channel 10
+     ADC1_CR2 |= (0b111 << 17); // Set software start as external event for regular group conversion
+     ADC1_CR2.ADON = 1; // Enable ADC1
+
+//read the value of the ADC
+     ADC1_CR2 |= 1 << 20; //enables external trigger conversion mode
+     ADC1_CR2 |= 1 << 22; //starts the conversion
+     while(ADC1_SR.B1 != 1){} //wait until conversion is done
+     //ADCval = ADC1_DR;
+     //adjustedADC = m*ADCval+b; //pot goes from 0-3831 we want to display 1-100 so this formula
+                               //scales the ADC value to be between 1 and 100
+     //return adjustedADC;
+     return ADC1_DR;
 }
