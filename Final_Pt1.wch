@@ -7,5 +7,6 @@
 <item n="_joy" r="0" s="True" e="False" i="5"/>
 <item n="ADC1_DR" r="0" s="False" e="False" i="6"/>
 <item n="ADC1_SR" r="2" s="False" e="False" i="7"/>
-<item n="_pot" r="0" s="True" e="False" i="8"/>
+<item n="_pot" r="3" s="True" e="False" i="8"/>
+<item n="GPIOD_ODR" r="0" s="False" e="False" i="9"/>
 </WCH>

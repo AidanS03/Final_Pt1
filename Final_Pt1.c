@@ -7,9 +7,7 @@
 //******************************************************************************
 //Global Variables:
 int joy = 0;
-int pot;
-int adjustedADC; //value of scaled pot between 1-100
-int ADCval;
+double pot;
 //******************************************************************************
 //Function Prototypes:
 int joyRead();
@@ -104,9 +102,9 @@ int getPot(){
 
 int adjustVal(){
      int ogvalue, value;
-     double m = 99/3830;
-     double b = 3731/3830;
+     double slope = 0.02584856397;
+     double b = 0.974151436;
      ogvalue = getPot();
-     value = (m * ogvalue) + b;
+     value = (slope * ogvalue) + b + 0.5;
      return value;
 }
