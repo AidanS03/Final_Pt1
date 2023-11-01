@@ -12,7 +12,6 @@ double pot;
 //Function Prototypes:
 int joyRead();
 int getPot();
-int adjustVal();
 //******************************************************************************
 //Main Function:
 void main() {
@@ -49,7 +48,7 @@ void main() {
                     GPIOE_ODR = 0xFF00;
                     break;
           }
-          pot = adjustVal();
+          pot = getPot();
           GPIOD_ODR = pot;
      }
 }
@@ -76,12 +75,12 @@ int joyRead(){
 }
 
 int getPot(){
-//double m = 99/3830;
-//double b = 3731/3830;
+     int ADCval;
+     int adjustedADC;
 //Configure the ADC
      GPIOD_CRL = 0x33333333; //sets GPIOD as an output
      GPIOD_CRH = 0x33333333;
-     GPIOC_CRL = 0;
+     GPIOC_CRL = 0;         //Sets PC0 to be an analog input
      RCC_APB2ENR |= 1 << 9 ; // Enable ADC1 Clock
      ADC1_SQR1 = (0b0000 << 20); // sets ADC to do 1 conversion
      ADC1_SQR3 = 10; // Select Channel 10 as only one in conversion sequence
@@ -93,18 +92,9 @@ int getPot(){
      ADC1_CR2 |= 1 << 20; //enables external trigger conversion mode
      ADC1_CR2 |= 1 << 22; //starts the conversion
      while(ADC1_SR.B1 != 1){} //wait until conversion is done
-     //ADCval = ADC1_DR;
-     //adjustedADC = ((99/3830) * ADCval) + (3731/3830); //pot goes from 0-3831 we want to display 1-100 so this formula
-                               //scales the ADC value to be between 1 and 100
-     //return adjustedADC;
-     return ADC1_DR;
-}
-
-int adjustVal(){
-     int ogvalue, value;
-     double slope = 0.02584856397;
-     double b = 0.974151436;
-     ogvalue = getPot();
-     value = (slope * ogvalue) + b + 0.5;
-     return value;
+     ADCval = ADC1_DR;
+//scale the ADC value
+     adjustedADC = (0.02584856397 * ADCval) + (0.974151436) + 0.5; //pot goes from 0-3831 we want to display 1-100 so this formula
+     //scales the ADC value to be between 1 and 100 the extra 0.5 is needed for rounding
+     return adjustedADC;
 }
