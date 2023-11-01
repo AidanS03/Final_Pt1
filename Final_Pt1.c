@@ -13,7 +13,8 @@ int ADCval;
 //******************************************************************************
 //Function Prototypes:
 int joyRead();
-int potRead();
+int getPot();
+int adjustVal();
 //******************************************************************************
 //Main Function:
 void main() {
@@ -50,7 +51,7 @@ void main() {
                     GPIOE_ODR = 0xFF00;
                     break;
           }
-          pot = potRead();
+          pot = adjustVal();
           GPIOD_ODR = pot;
      }
 }
@@ -76,7 +77,7 @@ int joyRead(){
      }else return 0; //nothing pressed return 0
 }
 
-int potRead(){
+int getPot(){
 //double m = 99/3830;
 //double b = 3731/3830;
 //Configure the ADC
@@ -95,8 +96,17 @@ int potRead(){
      ADC1_CR2 |= 1 << 22; //starts the conversion
      while(ADC1_SR.B1 != 1){} //wait until conversion is done
      //ADCval = ADC1_DR;
-     //adjustedADC = m*ADCval+b; //pot goes from 0-3831 we want to display 1-100 so this formula
+     //adjustedADC = ((99/3830) * ADCval) + (3731/3830); //pot goes from 0-3831 we want to display 1-100 so this formula
                                //scales the ADC value to be between 1 and 100
      //return adjustedADC;
      return ADC1_DR;
+}
+
+int adjustVal(){
+     int ogvalue, value;
+     double m = 99/3830;
+     double b = 3731/3830;
+     ogvalue = getPot();
+     value = (m * ogvalue) + b;
+     return value;
 }

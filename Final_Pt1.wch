@@ -6,8 +6,6 @@
 <item n="GPIOE_ODR" r="2" s="False" e="False" i="4"/>
 <item n="_joy" r="0" s="True" e="False" i="5"/>
 <item n="ADC1_DR" r="0" s="False" e="False" i="6"/>
-<item n="_ADCval" r="0" s="True" e="False" i="7"/>
-<item n="_adjustedADC" r="0" s="True" e="False" i="8"/>
-<item n="ADC1_SR" r="2" s="False" e="False" i="9"/>
-<item n="_pot" r="0" s="True" e="False" i="10"/>
+<item n="ADC1_SR" r="2" s="False" e="False" i="7"/>
+<item n="_pot" r="0" s="True" e="False" i="8"/>
 </WCH>
